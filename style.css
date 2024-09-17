@@ -43,6 +43,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
+    text-align: center;
 }
 
 .tab-button:hover {
@@ -51,6 +52,7 @@ body {
 
 .tab-content {
     display: none;
+    text-align: center;
 }
 
 .tab-content.active {
