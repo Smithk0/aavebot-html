@@ -18,17 +18,23 @@
     <script>
         const tg = window.Telegram.WebApp;
 
+        // Log to ensure that the WebApp is properly initialized
+        console.log("Telegram WebApp initialized:", tg);
+
         document.getElementById('referral-link-btn').addEventListener('click', () => {
             // Send referral request to the bot
-            tg.sendData('generate_referral');
+            console.log("Referral button clicked");
+            tg.sendData('generate_referral');  // Send 'generate_referral' data to the bot
         });
 
         document.getElementById('check-wallet-btn').addEventListener('click', () => {
             // Send wallet check request to the bot
-            tg.sendData('check_wallet');
+            console.log("Check Wallet button clicked");
+            tg.sendData('check_wallet');  // Send 'check_wallet' data to the bot
         });
 
-        tg.ready();  // Call this to show the WebApp in Telegram properly
+        // Make sure the WebApp is ready
+        tg.ready();  
     </script>
 </body>
 </html>
