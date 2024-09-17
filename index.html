@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral WebApp</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AAVEBOT TOKEN</h1>
+        <p>Invite 5 friends to unlock your rewards!</p>
+        <button id="referral-link-btn">Generate Referral Link</button>
+        <button id="check-wallet-btn">Check Wallet Eligibility</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+
+        document.getElementById('referral-link-btn').addEventListener('click', () => {
+            // Send referral request to the bot
+            tg.sendData('generate_referral');
+        });
+
+        document.getElementById('check-wallet-btn').addEventListener('click', () => {
+            // Send wallet check request to the bot
+            tg.sendData('check_wallet');
+        });
+
+        tg.ready();  // Call this to show the WebApp in Telegram properly
+    </script>
+</body>
+</html>
