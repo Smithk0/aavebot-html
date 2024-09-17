@@ -47,6 +47,7 @@
 
         console.log("Telegram WebApp initialized:", tg);
 
+        // Tab functionality
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => {
                 const tab = button.getAttribute('data-tab');
@@ -56,51 +57,91 @@
             });
         });
 
+        // Generate Referral Link
         document.getElementById('generate-referral-link-btn').addEventListener('click', async () => {
             console.log("Generate Referral Link button clicked");
-            tg.sendData('generate_referral');
-
-            // Simulate receiving referral link and update UI
-            const referralLink = await new Promise((resolve) => {
-                tg.onEvent('data', (data) => {
-                    if (data === 'generate_referral') {
-                        const link = `https://t.me/AAVEclaim_bot?start=referral_${tg.initDataUnsafe.user.id}`;
-                        resolve(link);
-                    }
+            try {
+                const response = await fetch('/generate_referral', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: tg.initDataUnsafe.user.id,
+                        username: tg.initDataUnsafe.user.username
+                    }),
                 });
-            });
-
-            if (referralLink) {
-                navigator.clipboard.writeText(referralLink).then(() => {
-                    alert("Referral link copied to clipboard!");
-                }).catch(err => {
-                    console.error("Failed to copy referral link: ", err);
-                });
-
-                // Update referred users list
-                const referredUsers = await new Promise((resolve) => {
-                    tg.onEvent('data', (data) => {
-                        if (data === 'generate_referral') {
-                            resolve(["user1", "user2", "user3"]); // Replace with actual referred users list
-                        }
+                const data = await response.json();
+                if (data.referral_link) {
+                    navigator.clipboard.writeText(data.referral_link).then(() => {
+                        alert("Referral link copied to clipboard!");
+                    }).catch(err => {
+                        console.error("Failed to copy referral link: ", err);
                     });
-                });
 
-                const referredUsersList = document.getElementById('referred-users-list');
-                referredUsersList.innerHTML = referredUsers.map(user => `<li>${user}</li>`).join('');
+                    // Update referred users list
+                    const referredUsers = ["user1", "user2", "user3"]; // Replace with actual referred users list
+                    const referredUsersList = document.getElementById('referred-users-list');
+                    referredUsersList.innerHTML = referredUsers.map(user => `<li>${user}</li>`).join('');
+                }
+            } catch (error) {
+                console.error("Error generating referral link:", error);
             }
         });
 
-        document.getElementById('connect-ton-btn').addEventListener('click', () => {
-            window.location.href = 'https://www.google.com';
+        // Connect buttons
+        document.getElementById('connect-ton-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/connect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ platform: 'ton' }),
+                });
+                const data = await response.json();
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
+            } catch (error) {
+                console.error("Error connecting:", error);
+            }
         });
 
-        document.getElementById('connect-eth-btn').addEventListener('click', () => {
-            window.location.href = 'https://www.google.com';
+        document.getElementById('connect-eth-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/connect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ platform: 'eth' }),
+                });
+                const data = await response.json();
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
+            } catch (error) {
+                console.error("Error connecting:", error);
+            }
         });
 
-        document.getElementById('connect-tron-btn').addEventListener('click', () => {
-            window.location.href = 'https://www.google.com';
+        document.getElementById('connect-tron-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/connect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ platform: 'tron' }),
+                });
+                const data = await response.json();
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
+            } catch (error) {
+                console.error("Error connecting:", error);
+            }
         });
 
         tg.ready();
