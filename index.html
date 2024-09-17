@@ -44,12 +44,6 @@
             <button id="connect-tron-btn">Connect TRON</button>
         </div>
     </div>
-    
-    <div class="bottom-nav">
-        <button id="nav-wallet">Wallet</button>
-        <button id="nav-earn">Earn</button>
-        <button id="nav-connect">Connect</button>
-    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -68,18 +62,6 @@
         document.getElementById('generate-referral-link-btn').addEventListener('click', () => {
             console.log("Generate Referral Link button clicked");
             tg.sendData('generate_referral');
-        });
-
-        document.getElementById('nav-wallet').addEventListener('click', () => {
-            document.querySelector('.tab-button[data-tab="wallet"]').click();
-        });
-
-        document.getElementById('nav-earn').addEventListener('click', () => {
-            document.querySelector('.tab-button[data-tab="earn"]').click();
-        });
-
-        document.getElementById('nav-connect').addEventListener('click', () => {
-            document.querySelector('.tab-button[data-tab="connect"]').click();
         });
 
         tg.ready();
