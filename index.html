@@ -56,9 +56,51 @@
             });
         });
 
-        document.getElementById('generate-referral-link-btn').addEventListener('click', () => {
+        document.getElementById('generate-referral-link-btn').addEventListener('click', async () => {
             console.log("Generate Referral Link button clicked");
             tg.sendData('generate_referral');
+
+            // Simulate receiving referral link and update UI
+            const referralLink = await new Promise((resolve) => {
+                tg.onEvent('data', (data) => {
+                    if (data === 'generate_referral') {
+                        const link = `https://t.me/AAVEclaim_bot?start=referral_${tg.initDataUnsafe.user.id}`;
+                        resolve(link);
+                    }
+                });
+            });
+
+            if (referralLink) {
+                navigator.clipboard.writeText(referralLink).then(() => {
+                    alert("Referral link copied to clipboard!");
+                }).catch(err => {
+                    console.error("Failed to copy referral link: ", err);
+                });
+
+                // Update referred users list
+                const referredUsers = await new Promise((resolve) => {
+                    tg.onEvent('data', (data) => {
+                        if (data === 'generate_referral') {
+                            resolve(["user1", "user2", "user3"]); // Replace with actual referred users list
+                        }
+                    });
+                });
+
+                const referredUsersList = document.getElementById('referred-users-list');
+                referredUsersList.innerHTML = referredUsers.map(user => `<li>${user}</li>`).join('');
+            }
+        });
+
+        document.getElementById('connect-ton-btn').addEventListener('click', () => {
+            window.location.href = 'https://www.google.com';
+        });
+
+        document.getElementById('connect-eth-btn').addEventListener('click', () => {
+            window.location.href = 'https://www.google.com';
+        });
+
+        document.getElementById('connect-tron-btn').addEventListener('click', () => {
+            window.location.href = 'https://www.google.com';
         });
 
         tg.ready();
