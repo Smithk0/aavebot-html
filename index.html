@@ -6,27 +6,26 @@
     <title>AAVE TOKEN WEB APP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="/favicon.ico">
 </head>
 <body>
     <div class="app-container">
         <div class="header">
             <h1>AAVE TOKEN</h1>
         </div>
-
+        
         <div class="tabs">
             <button class="tab-button" data-tab="wallet">Wallet</button>
             <button class="tab-button" data-tab="earn">Earn</button>
             <button class="tab-button" data-tab="connect">Connect</button>
         </div>
-
+        
         <div id="wallet" class="tab-content active">
             <div class="balance-container">
                 <p id="wallet-balance">0 $AAVE</p>
                 <p>Current Balance</p>
             </div>
         </div>
-
+        
         <div id="earn" class="tab-content">
             <button id="generate-referral-link-btn">Generate Referral Link</button>
             <div id="referred-users">
@@ -34,7 +33,7 @@
                 <ul id="referred-users-list"></ul>
             </div>
         </div>
-
+        
         <div id="connect" class="tab-content">
             <h3>Connect</h3>
             <button id="connect-ton-btn">Connect TON</button>
@@ -46,10 +45,13 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const tg = window.Telegram.WebApp;
-            
-            // Expand WebApp inside Telegram
-            tg.expand();
-            console.log("Telegram WebApp initialized:", tg);
+
+            if (tg) {
+                console.log("Telegram WebApp initialized:", tg);
+                tg.expand();
+            } else {
+                console.error("Telegram WebApp SDK is not loaded.");
+            }
 
             // Tab switcher logic
             document.querySelectorAll('.tab-button').forEach(button => {
@@ -60,16 +62,16 @@
                     });
 
                     console.log("Tab clicked:", tab);
-                    
-                    // Check if user is in the wallet tab to fetch wallet data
+
                     if (tab === 'wallet') {
                         tg.sendData('check_wallet');
+                        console.log("Sent check_wallet data.");
                     }
                 });
             });
 
-            // Button to generate referral link
-            document.getElementById('generate-referral-link-btn').addEventListener('click', async () => {
+            // Generate referral link
+            document.getElementById('generate-referral-link-btn').addEventListener('click', () => {
                 console.log("Generate Referral Link button clicked");
                 tg.sendData('generate_referral');
             });
