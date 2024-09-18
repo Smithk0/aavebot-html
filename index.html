@@ -21,7 +21,7 @@
         
         <div id="wallet" class="tab-content active">
             <div class="balance-container">
-                <p id="wallet-balance">0 $AAVE</p>
+                <p id="wallet-balance">Fetching balance...</p>
                 <p>Current Balance</p>
             </div>
         </div>
@@ -47,6 +47,10 @@
 
         console.log("Telegram WebApp initialized:", tg);
 
+        // Expand the WebApp
+        tg.expand();
+
+        // Tab switching logic
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => {
                 const tab = button.getAttribute('data-tab');
@@ -56,11 +60,12 @@
             });
         });
 
-        document.getElementById('generate-referral-link-btn').addEventListener('click', async () => {
-            console.log("Generate Referral Link button clicked");
+        // Event listener for the referral link button
+        document.getElementById('generate-referral-link-btn').addEventListener('click', () => {
             tg.sendData('generate_referral');
         });
 
+        // Event listeners for wallet connection buttons
         document.getElementById('connect-ton-btn').addEventListener('click', () => {
             tg.sendData('connect_ton');
         });
@@ -73,7 +78,29 @@
             tg.sendData('connect_tron');
         });
 
-        tg.expand();
+        // Request for user's wallet data on load
+        tg.sendData('check_wallet');
+
+        // Listen for messages from the bot and update the UI dynamically
+        tg.onEvent('message', (message) => {
+            const text = message.text;
+            console.log("Message from bot:", text);
+
+            // Update wallet balance
+            if (text.includes('$AAVE tokens')) {
+                document.getElementById('wallet-balance').textContent = text;
+            }
+
+            // Update referred users and referral link
+            if (text.includes('Referral link:')) {
+                const referralInfo = text.split('\n');
+                const referralLink = referralInfo[0].replace('Referral link: ', '');
+                const referredUsers = referralInfo.slice(1).join('\n').replace('Referred users:', '');
+
+                // Update the referral link and referred users in the UI
+                document.getElementById('referred-users-list').innerHTML = referredUsers.split('\n').map(user => `<li>${user}</li>`).join('');
+            }
+        });
     </script>
 </body>
 </html>
