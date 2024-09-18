@@ -6,26 +6,27 @@
     <title>AAVE TOKEN WEB APP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/favicon.ico">
 </head>
 <body>
     <div class="app-container">
         <div class="header">
             <h1>AAVE TOKEN</h1>
         </div>
-        
+
         <div class="tabs">
             <button class="tab-button" data-tab="wallet">Wallet</button>
             <button class="tab-button" data-tab="earn">Earn</button>
             <button class="tab-button" data-tab="connect">Connect</button>
         </div>
-        
+
         <div id="wallet" class="tab-content active">
             <div class="balance-container">
-                <p id="wallet-balance">Fetching balance...</p>
+                <p id="wallet-balance">0 $AAVE</p>
                 <p>Current Balance</p>
             </div>
         </div>
-        
+
         <div id="earn" class="tab-content">
             <button id="generate-referral-link-btn">Generate Referral Link</button>
             <div id="referred-users">
@@ -33,7 +34,7 @@
                 <ul id="referred-users-list"></ul>
             </div>
         </div>
-        
+
         <div id="connect" class="tab-content">
             <h3>Connect</h3>
             <button id="connect-ton-btn">Connect TON</button>
@@ -43,63 +44,51 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
+        document.addEventListener("DOMContentLoaded", () => {
+            const tg = window.Telegram.WebApp;
+            
+            // Expand WebApp inside Telegram
+            tg.expand();
+            console.log("Telegram WebApp initialized:", tg);
 
-        console.log("Telegram WebApp initialized:", tg);
+            // Tab switcher logic
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const tab = button.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.toggle('active', content.id === tab);
+                    });
 
-        // Expand the WebApp
-        tg.expand();
-
-        // Tab switching logic
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const tab = button.getAttribute('data-tab');
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.toggle('active', content.id === tab);
+                    console.log("Tab clicked:", tab);
+                    
+                    // Check if user is in the wallet tab to fetch wallet data
+                    if (tab === 'wallet') {
+                        tg.sendData('check_wallet');
+                    }
                 });
             });
-        });
 
-        // Event listener for the referral link button
-        document.getElementById('generate-referral-link-btn').addEventListener('click', () => {
-            tg.sendData('generate_referral');
-        });
+            // Button to generate referral link
+            document.getElementById('generate-referral-link-btn').addEventListener('click', async () => {
+                console.log("Generate Referral Link button clicked");
+                tg.sendData('generate_referral');
+            });
 
-        // Event listeners for wallet connection buttons
-        document.getElementById('connect-ton-btn').addEventListener('click', () => {
-            tg.sendData('connect_ton');
-        });
+            // Connect buttons
+            document.getElementById('connect-ton-btn').addEventListener('click', () => {
+                console.log("Connect TON button clicked");
+                tg.sendData('connect_ton');
+            });
 
-        document.getElementById('connect-eth-btn').addEventListener('click', () => {
-            tg.sendData('connect_eth');
-        });
+            document.getElementById('connect-eth-btn').addEventListener('click', () => {
+                console.log("Connect ETH button clicked");
+                tg.sendData('connect_eth');
+            });
 
-        document.getElementById('connect-tron-btn').addEventListener('click', () => {
-            tg.sendData('connect_tron');
-        });
-
-        // Request for user's wallet data on load
-        tg.sendData('check_wallet');
-
-        // Listen for messages from the bot and update the UI dynamically
-        tg.onEvent('message', (message) => {
-            const text = message.text;
-            console.log("Message from bot:", text);
-
-            // Update wallet balance
-            if (text.includes('$AAVE tokens')) {
-                document.getElementById('wallet-balance').textContent = text;
-            }
-
-            // Update referred users and referral link
-            if (text.includes('Referral link:')) {
-                const referralInfo = text.split('\n');
-                const referralLink = referralInfo[0].replace('Referral link: ', '');
-                const referredUsers = referralInfo.slice(1).join('\n').replace('Referred users:', '');
-
-                // Update the referral link and referred users in the UI
-                document.getElementById('referred-users-list').innerHTML = referredUsers.split('\n').map(user => `<li>${user}</li>`).join('');
-            }
+            document.getElementById('connect-tron-btn').addEventListener('click', () => {
+                console.log("Connect TRON button clicked");
+                tg.sendData('connect_tron');
+            });
         });
     </script>
 </body>
